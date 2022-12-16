@@ -236,6 +236,32 @@ class SyntheticDataset(object):
 
         return X
 
+    def sample(
+            self,
+            W,
+            n_obs,
+            sem_type,
+            w_range,
+            n_inters=0,
+            noise_scale=1.0,
+            dataset_type="nonlinear_1",
+            W_2=None,
+            sigmas=None,
+    ):
+        X_obs = self.simulate_sem(W, n_obs, sem_type, w_range, noise_scale, dataset_type, W_2, sigmas)
+
+        d = W.shape[0]
+        interv_targets = np.zeros((n_obs + n_inters, d), dtype=bool)
+        X = X_obs
+        if n_inters:
+            X_inters = []
+            intervention_nodes = np.random.choice(list(range(d)), size=n_inters)
+            for i, node in enumerate(intervention_nodes):
+                interv_targets[n_obs + i][node] = True
+                X_inters.append(self.intervene_sem(W, 1, sem_type, sigmas, idx_to_fix=node, value_to_fix=0))
+            X = np.vstack((X_obs, np.array(X_inters).squeeze()))
+        return X, interv_targets
+
 
 def count_accuracy(W_true, W_est, W_und=None) -> Dict["str", float]:
     """

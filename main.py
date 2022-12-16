@@ -83,7 +83,8 @@ parser.add_argument("--use_flow", action="store_true")
 parser.add_argument("--batch_size", type=int, default=64)
 parser.add_argument("--degree", type=int, default=1)
 parser.add_argument("--subsample", action="store_true")
-parser.add_argument("--n_data", type=int, default=100)
+parser.add_argument("--n_obs", type=int, default=100)
+parser.add_argument("--n_inters", type=int, default=0)
 parser.add_argument("--only_baselines", action="store_true")
 parser.add_argument("--num_steps", type=int, default=20_000)
 parser.add_argument("--golem_steps", type=int, default=200_000)
@@ -117,7 +118,9 @@ print_golem_solution = args.print_golem_solution
 degree = args.degree
 use_flow = args.use_flow
 subsample = args.subsample
-n_data = args.n_data
+n_obs = args.n_obs
+n_inters = args.n_inters
+n_data = n_obs + n_inters
 sem_type = args.sem_type
 only_baselines = args.only_baselines
 num_steps = args.num_steps
@@ -276,6 +279,7 @@ if use_sachs:
     # Note that for our training, we centered based on n=853 but then gave 100
     Xs = process_sachs(center=True, normalize=True, n_data=n_data, rng_key=rng_key)
     test_Xs = process_sachs(center=True, normalize=True, rng_key=rng_key)
+    interv_targets = jnp.zeros(Xs.shape, dtype=bool)
     ground_truth_W = get_sachs_ground_truth()
     n_data = len(Xs)
     ground_truth_sigmas = jnp.ones(dim)
@@ -292,11 +296,12 @@ else:
     ground_truth_W = sd.W
     ground_truth_P = sd.P
 
-    Xs = sd.simulate_sem(
+    Xs, interv_targets = sd.sample(
         ground_truth_W,
-        n_data,
+        n_obs,
         sd.sem_type,
         w_range=None,
+        n_inters=n_inters,
         noise_scale=None,
         dataset_type="linear",
         W_2=None,
@@ -566,7 +571,7 @@ def sample_L(
         return full_l_batch, full_log_prob_l, out_L_states
 
 
-def log_prob_x(Xs, log_sigmas, P, L, rng_key):
+def log_prob_x(Xs, log_sigmas, P, L, interv_targets, rng_key):
     """Calculates log P(X|Z) for latent Zs
 
     X|Z is Gaussian so easy to calculate
@@ -576,6 +581,7 @@ def log_prob_x(Xs, log_sigmas, P, L, rng_key):
         log_sigmas: A (dim)-dimension vector of log standard deviations
         P: A (dim x dim)-dimensional permutation matrix
         L: A (dim x dim)-dimensional strictly lower triangular matrix
+        interv_targets: A (n x dim)-dimensional boolean array corresponding to the nodes intervened
     Returns:
         log_prob: Log probability of observing Xs given P, L
     """
@@ -591,18 +597,26 @@ def log_prob_x(Xs, log_sigmas, P, L, rng_key):
     precision = (
         (jnp.eye(dim) - W) @ (jnp.diag(jnp.exp(-2 * log_sigmas))) @ (jnp.eye(dim) - W).T
     )
-    eye_minus_W_logdet = 0
-    log_det_precision = -2 * jnp.sum(log_sigmas) + 2 * eye_minus_W_logdet
+    # eye_minus_W_logdet = 0
+    # log_det_precision = -2 * jnp.sum(log_sigmas) + 2 * eye_minus_W_logdet
+
+    interv_log_sigmas = jnp.tile(log_sigmas, (Xs.shape[0], 1))
+    interv_log_sigmas = jnp.where(interv_targets, 0.0, interv_log_sigmas)
+    log_det_precision = -jnp.sum(interv_log_sigmas)
 
     def datapoint_exponent(x):
         return -0.5 * x.T @ precision @ x
 
-    log_exponent = vmap(datapoint_exponent)(Xs)
+    log_exponent = vmap(datapoint_exponent)(jnp.where(interv_targets, 0.0, Xs))
 
     return adjustment_factor * (
-        0.5 * n * (log_det_precision - dim * jnp.log(2 * jnp.pi))
+        log_det_precision - 0.5 * (jnp.sum(~interv_targets)) * jnp.log(2 * jnp.pi)
         + jnp.sum(log_exponent)
     )
+    # return adjustment_factor * (
+    #     0.5 * n * (log_det_precision - dim * jnp.log(2 * jnp.pi))
+    #     + jnp.sum(log_exponent)
+    # )
 
 
 def elbo(
@@ -614,6 +628,7 @@ def elbo(
     tau: float,
     num_outer: int = 1,
     hard: bool = False,
+    interv_targets: jnp.ndarray = jnp.zeros((n_data, dim), dtype=bool)
 ) -> Tuple[jnp.ndarray, LStateType]:
     """Computes ELBO estimate from parameters.
 
@@ -661,8 +676,10 @@ def elbo(
             batched_P_samples = ds.sample_soft_batched_logits(
                 batched_P_logits, tau, rng_key,
             )
-        likelihoods = vmap(log_prob_x, in_axes=(None, 0, 0, 0, None))(
-            Xs, batched_noises, batched_P_samples, batched_lower_samples, rng_key,
+        # interv_targets = jnp.zeros(Xs.shape, dtype=bool)
+        # interv_targets = interv_targets.at[0].set(True)
+        likelihoods = vmap(log_prob_x, in_axes=(None, 0, 0, 0, None, None))(
+            Xs, batched_noises, batched_P_samples, batched_lower_samples, interv_targets, rng_key,
         )
         l_prior_probs = jnp.sum(l_prior.log_prob(full_l_batch)[:, :l_dim], axis=1)
         s_prior_probs = jnp.sum(
@@ -807,7 +824,7 @@ def eval_ID(P_params, L_params, L_states, Xs, rng_key, tau):
 )
 def parallel_elbo_estimate(P_params, L_params, L_states, Xs, rng_keys, tau, n, hard):
     elbos, _ = elbo(
-        P_params, L_params, L_states, Xs, rng_keys, tau, n // num_devices, hard
+        P_params, L_params, L_states, Xs, rng_keys, tau, n // num_devices, hard, interv_targets
     )
     mean_elbos = lax.pmean(elbos, axis_name="i")
     return jnp.mean(mean_elbos)
@@ -826,7 +843,7 @@ def parallel_gradient_step(
     tau_scaling_factor = 1.0 / tau
 
     (_, L_states), grads = value_and_grad(elbo, argnums=(0, 1), has_aux=True)(
-        P_params, L_params, L_states, Xs, rng_key, tau, num_outer, hard=True,
+        P_params, L_params, L_states, Xs, rng_key, tau, num_outer, hard=True, interv_targets=interv_targets,
     )
     elbo_grad_P, elbo_grad_L = tree_map(lambda x: -tau_scaling_factor * x, grads)
 
@@ -867,7 +884,7 @@ def compute_grad_variance(
         un_pmap(rng_key),
     )
     (_, L_states), grads = value_and_grad(elbo, argnums=(0, 1), has_aux=True)(
-        P_params, L_params, L_states, Xs, rng_key, tau, num_outer, hard=True,
+        P_params, L_params, L_states, Xs, rng_key, tau, num_outer, hard=True, interv_targets=interv_targets
     )
 
     return get_double_tree_variance(*grads)
