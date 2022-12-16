@@ -1,4 +1,4 @@
-This fork adds the support for interventional data to BCD-Nets.
+This fork adds support for interventional data to BCD-Nets.
 
 This folder contains the code for 'Scalable Variational Approaches for Bayesian Causal Discovery'.
 
