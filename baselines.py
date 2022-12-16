@@ -1,11 +1,11 @@
 import sumu  # type: ignore
-from dag_utils import (
+from .dag_utils import (
     SyntheticDataset,
     process_sachs,
     get_sachs_ground_truth,
 )
 from cdt.causality.graph import GIES, GES, LiNGAM, PC
-from utils import (
+from .utils import (
     eval_W_non_ev,
     eval_W_ev,
     auroc,
@@ -19,10 +19,10 @@ from pandas import DataFrame
 import networkx as nx
 from cdt.metrics import SHD_CPDAG
 from lingam import DirectLiNGAM
-from dag_utils import dagify
+from .dag_utils import dagify
 import jax.numpy as jnp
 import numpy as np
-from metrics import intervention_distance, ensemble_intervention_distance
+from .metrics import intervention_distance, ensemble_intervention_distance
 import time
 import jax.random as rnd
 import os

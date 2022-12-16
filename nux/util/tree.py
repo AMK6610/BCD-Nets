@@ -1,7 +1,7 @@
 import jax
 import jax.numpy as jnp
 from jax import random
-from nux.internal.base import get_tree_shapes
+from ...nux.internal.base import get_tree_shapes
 import haiku as hk
 
 __all__ = ["key_tree_like",

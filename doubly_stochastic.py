@@ -2,12 +2,12 @@ import jax.numpy as np
 import jax.random as rnd
 from jax import lax, vmap
 from jax.scipy.special import logsumexp
-from utils import npperm
+from .utils import npperm
 
 import numpy as onp
 from typing import Type, Union
-from hungarian_callback import hungarian, batched_hungarian
-from implicit_sinkhorn import while_uv_sinkhorn, while_uv_sinkhorn_debug
+from .hungarian_callback import hungarian, batched_hungarian
+from .implicit_sinkhorn import while_uv_sinkhorn, while_uv_sinkhorn_debug
 
 Tensor = Union[onp.ndarray, np.ndarray]
 PRNGKey = Type[np.ndarray]

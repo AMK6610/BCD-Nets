@@ -1,13 +1,13 @@
 import jax
 import jax.numpy as jnp
-import nux.util as util
+from .....nux import util as util
 from jax import random, vmap, jit
 from functools import partial
 from typing import Optional, Mapping, Callable, Sequence
-from nux.internal.base import CustomFrame
+from .....nux.internal.base import CustomFrame
 from haiku._src.typing import PRNGKey
 import haiku._src.base as hk_base
-from nux.flows.bijective.residual_flows.power_series import unbiased_neumann_vjp_terms
+from .....nux.flows.bijective.residual_flows.power_series import unbiased_neumann_vjp_terms
 
 ################################################################################################################
 

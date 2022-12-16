@@ -1,17 +1,16 @@
 import jax
 import jax.numpy as jnp
-import nux.util as util
+from ....nux import util as util
 from jax import random, vmap
 from functools import partial
 import haiku as hk
 from typing import Optional, Mapping, Callable, Sequence
-from nux.internal.layer import InvertibleLayer
-import nux.util as util
+from ....nux.internal.layer import InvertibleLayer
 from jax.scipy.special import logsumexp
-import nux.networks as net
-from nux.util import logistic_cdf_mixture_logit
-import nux
-from nux.flows.bijective.coupling_base import Elementwise
+from ....nux import networks as net
+from ....nux.util import logistic_cdf_mixture_logit
+from .... import nux
+from ....nux.flows.bijective.coupling_base import Elementwise
 from abc import ABC, abstractmethod
 
 __all__ = ["LogisticMixtureLogit"]

@@ -2,8 +2,8 @@ from functools import partial
 import jax.numpy as jnp
 import jax
 from jax import random, jit, vmap
-from nux.internal.flow import Flow
-import nux.util as util
+from ...nux.internal.flow import Flow
+from ...nux import util as util
 from typing import Optional, Mapping, Callable, Sequence, Tuple, Any
 from haiku._src.typing import Params, State, PRNGKey
 from abc import ABC, abstractmethod

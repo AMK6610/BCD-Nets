@@ -3,10 +3,10 @@ from jax import jit, random
 from functools import partial
 import jax
 import haiku as hk
-from nux.internal.layer import Layer
-import nux.util as util
+from ...nux.internal.layer import Layer
+from ...nux import util as util
 from typing import Optional, Mapping, Callable, Sequence, Any
-import nux.util.weight_initializers as init
+from ...nux.util import weight_initializers as init
 import warnings
 
 __all__ = ["Conv",

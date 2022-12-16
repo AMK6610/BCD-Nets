@@ -2,7 +2,7 @@ import jax
 import jax.numpy as jnp
 from jax import random, vmap, jit
 from functools import partial
-import nux.util as util
+from .....nux import util as util
 from typing import Optional, Mapping, Callable, Sequence
 
 def geometric_roulette_coefficients(k_start, k_end, key):

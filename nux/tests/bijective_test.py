@@ -3,9 +3,9 @@ import jax.numpy as jnp
 from jax import random
 from jax.flatten_util import ravel_pytree
 from functools import partial
-import nux.util as util
+from ...nux import util as util
 
-import nux
+from ... import nux
 
 def reconstruction_test(create_fun, inputs, rng, batch_axes):
   flow = nux.transform_flow(create_fun)

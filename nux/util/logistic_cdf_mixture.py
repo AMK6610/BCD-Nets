@@ -4,7 +4,7 @@ from functools import partial
 import jax
 import haiku as hk
 from typing import Optional, Mapping, Callable, Sequence, Any
-import nux.util.weight_initializers as init
+from ...nux.util import weight_initializers as init
 from jax.scipy.special import logsumexp
 
 __all__ = ["logistic_cdf_mixture_logit",

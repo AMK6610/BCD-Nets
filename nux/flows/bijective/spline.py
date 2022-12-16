@@ -1,14 +1,13 @@
 import jax
 import jax.numpy as jnp
-import nux.util as util
+from ....nux import util as util
 from jax import random, vmap, jit
 from functools import partial
 import haiku as hk
 from typing import Optional, Mapping, Callable, Sequence
-from nux.internal.layer import InvertibleLayer
-import nux.util as util
-from nux.flows.bijective.coupling_base import Elementwise
-import nux.networks as net
+from ....nux.internal.layer import InvertibleLayer
+from ....nux.flows.bijective.coupling_base import Elementwise
+from ....nux import networks as net
 
 __all__ = ["RationalQuadraticSpline"]
 

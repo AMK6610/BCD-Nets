@@ -1,1 +1,1 @@
-from nux.training.flow_trainer import *
+from ...nux.training.flow_trainer import *

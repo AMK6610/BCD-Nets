@@ -1,7 +1,7 @@
-import nux
+from ... import nux
 from typing import Optional, Mapping, Callable, Sequence
 from functools import partial
-import nux.networks as net
+from ...nux import networks as net
 
 def ResidualFlowArchitecture(*,
                              hidden_channel_size,

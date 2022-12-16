@@ -18,9 +18,9 @@ from typing import (
     Set,
     TypeVar,
 )
-import nux.util as util
+from ...nux import util as util
 from haiku._src.typing import PRNGKey, Params, State
-from nux.internal.transform import transform_flow
+from ...nux.internal.transform import transform_flow
 
 __all__ = ["Flow"]
 

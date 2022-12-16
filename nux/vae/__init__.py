@@ -1,1 +1,1 @@
-from nux.vae.gaussian_vae import *
+from ...nux.vae.gaussian_vae import *

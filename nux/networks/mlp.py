@@ -1,12 +1,12 @@
 import jax.numpy as jnp
 from jax import jit, random
 from functools import partial
-from nux.internal.layer import Layer
+from ...nux.internal.layer import Layer
 import jax
 import haiku as hk
 from typing import Optional, Mapping, Callable, Sequence, Any
-import nux.util.weight_initializers as init
-import nux.util as util
+from ...nux.util import weight_initializers as init
+from ...nux import util as util
 
 __all__ = ["MLP"]
 

@@ -1,13 +1,12 @@
 import jax
 import jax.numpy as jnp
-import nux.util as util
+from ....nux import util as util
 from jax import random, vmap
 from functools import partial
 import haiku as hk
 from typing import Optional, Mapping, Tuple, Sequence, Union, Any, Callable
-from nux.internal.layer import InvertibleLayer
-import nux.util as util
-import nux.util.weight_initializers as init
+from ....nux.internal.layer import InvertibleLayer
+from ....nux.util import weight_initializers as init
 
 __all__ = ["Bias",
            "Identity",

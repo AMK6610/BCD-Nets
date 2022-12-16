@@ -2,12 +2,12 @@ import jax
 from jax import random, jit, vmap, ops
 import jax.numpy as jnp
 from functools import partial
-import nux.util as util
+from ....nux import util as util
 from typing import Optional, Mapping, Callable, Sequence
-from nux.internal.layer import InvertibleLayer
+from ....nux.internal.layer import InvertibleLayer
 import haiku as hk
 from haiku._src.typing import PRNGKey
-import nux
+from .... import nux
 
 """ Adapted from the SurVAE repo: https://github.com/didriknielsen/survae_flows/blob/master/survae/transforms/surjections/maxpool2d.py """
 

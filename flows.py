@@ -1,11 +1,11 @@
-import nux
+from . import nux
 import jax
 import jax.numpy as jnp
 import jax.random as rnd
-import nux.networks as net
-from nux.internal.layer import InvertibleLayer
-from nux.flows.bijective import Reverse, MAF
-from nux.flows.stochastic import ContinuouslyIndexed
+from .nux import networks as net
+from .nux.internal.layer import InvertibleLayer
+from .nux.flows.bijective import Reverse, MAF
+from .nux.flows.stochastic import ContinuouslyIndexed
 from jax.scipy.stats import norm
 import optax
 from jax import jit, value_and_grad

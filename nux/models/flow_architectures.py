@@ -1,4 +1,4 @@
-import nux
+from ... import nux
 from typing import Optional, Mapping, Callable, Sequence
 from functools import partial
 

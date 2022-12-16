@@ -5,12 +5,12 @@ import jax
 from jax import random, jit, vmap
 import haiku as hk
 from typing import Optional, Mapping, Type, Callable, Iterable, Any, Sequence, Union, Tuple
-import nux.util as util
-from nux.internal.layer import Layer, InvertibleLayer
-import nux
-from nux.internal.functional import make_functional_modules
+from ...nux import util as util
+from ...nux.internal.layer import Layer, InvertibleLayer
+from ... import nux
+from ...nux.internal.functional import make_functional_modules
 from haiku._src import data_structures
-from nux.internal.base import get_constant
+from ...nux.internal.base import get_constant
 import haiku._src.base as hk_base
 from haiku._src.base import ThreadLocalStack, \
                             MutableParams, \

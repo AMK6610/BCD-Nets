@@ -4,7 +4,7 @@ import numpy as np
 import jax
 from jax.nn import one_hot
 from jax import vmap
-from c_modules.mine import compute_parallel
+from .c_modules.mine import compute_parallel
 from jax import numpy as jnp
 
 

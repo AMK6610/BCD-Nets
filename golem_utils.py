@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 
 # from jax.scipy.linalg import expm
-from our_linalg import expm
+from .our_linalg import expm
 import numpy as np
 import optax
 import jax.random as rnd

@@ -2,16 +2,16 @@ import jax
 from jax import random, jit, vmap
 import jax.numpy as jnp
 from functools import partial
-import nux.util as util
+from ....nux import util as util
 from typing import Optional, Mapping, Callable, Sequence
-from nux.internal.layer import InvertibleLayer
+from ....nux.internal.layer import InvertibleLayer
 import haiku as hk
 from haiku._src.typing import PRNGKey
 from jax.scipy.special import gammaln, logsumexp
-import nux
-import nux.networks as net
-import nux.util.weight_initializers as init
-import nux.vae as vae
+from .... import nux
+from ....nux import networks as net
+from ....nux.util import weight_initializers as init
+from ....nux import vae as vae
 
 __all__ = ["RectangularMVP"]
 

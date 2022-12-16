@@ -14,8 +14,8 @@ import networkx as nx
 
 
 import pickle as pkl
-from dag_utils import count_accuracy
-from divergences import (
+from .dag_utils import count_accuracy
+from .divergences import (
     kl_sample_loss,
     wasserstein_sample_loss,
     kl_loss,

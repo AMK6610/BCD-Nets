@@ -1,22 +1,22 @@
 import jax
 import jax.numpy as jnp
-import nux.util as util
+from .....nux import util as util
 from jax import random, vmap, jit
 from functools import partial
 import haiku as hk
 from typing import Optional, Mapping, Callable, Sequence
-from nux.internal.layer import InvertibleLayer, Layer
-from nux.internal.base import CustomFrame
+from .....nux.internal.layer import InvertibleLayer, Layer
+from .....nux.internal.base import CustomFrame
 from haiku._src.typing import PRNGKey
-import nux.networks as net
-from nux.internal.functional import make_functional_modules
+from .....nux import networks as net
+from .....nux.internal.functional import make_functional_modules
 
-import nux.internal.functional as functional
+from .....nux.internal import functional as functional
 import haiku._src.base as hk_base
 
-from nux.flows.bijective.residual_flows.exact import res_flow_exact
-from nux.flows.bijective.residual_flows.trace_estimator import res_flow_sliced_estimate
-from nux.flows.bijective.residual_flows.inverse import fixed_point
+from .....nux.flows.bijective.residual_flows.exact import res_flow_exact
+from .....nux.flows.bijective.residual_flows.trace_estimator import res_flow_sliced_estimate
+from .....nux.flows.bijective.residual_flows.inverse import fixed_point
 
 class ResidualFlow(InvertibleLayer):
 

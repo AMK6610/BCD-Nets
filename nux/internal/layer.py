@@ -6,7 +6,7 @@ import haiku as hk
 from abc import ABC, abstractmethod
 from typing import Optional, Mapping, Type, Callable, Iterable, Any, Sequence, Union, Tuple, MutableMapping, NamedTuple, Set, TypeVar
 from haiku._src.typing import PRNGKey, Params, State
-from nux.internal.base import get_tree_shapes
+from ...nux.internal.base import get_tree_shapes
 
 __all__ = ["Layer"]
 

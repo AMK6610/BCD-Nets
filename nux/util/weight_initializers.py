@@ -2,9 +2,9 @@ import jax.numpy as jnp
 from jax import jit, random, vmap
 from functools import partial
 import jax
-import nux.util as util
+from ...nux import util as util
 import haiku as hk
-import nux.util.spectral_norm as sn
+from ...nux.util import spectral_norm as sn
 from typing import Optional, Mapping, Callable, Sequence, Any
 import haiku._src.base as hk_base
 import types

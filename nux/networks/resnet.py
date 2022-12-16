@@ -2,12 +2,12 @@ import jax.numpy as jnp
 from jax import jit, random
 from functools import partial
 import jax
-from nux.internal.layer import Layer
+from ...nux.internal.layer import Layer
 import haiku as hk
-from nux.networks.cnn import Conv, BottleneckConv, ReverseBottleneckConv
-from nux.networks.se import SqueezeExcitation
+from ...nux.networks.cnn import Conv, BottleneckConv, ReverseBottleneckConv
+from ...nux.networks.se import SqueezeExcitation
 from typing import Optional, Mapping, Callable, Sequence, Any
-from nux.flows.compose import repeat
+from ...nux.flows.compose import repeat
 
 __all__ = ["ResNet"]
 

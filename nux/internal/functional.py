@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, Mapping, Type, Callable, Iterable, Any, Sequence, Union, Tuple, MutableMapping, NamedTuple, Set, TypeVar
 import collections
 import contextlib
-from nux.internal.base import FrameData, CustomFrame
+from ...nux.internal.base import FrameData, CustomFrame
 
 from haiku._src.base import PRNGSequence, \
                             frame_stack, \

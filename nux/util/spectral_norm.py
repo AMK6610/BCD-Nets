@@ -2,7 +2,7 @@ import jax.numpy as jnp
 from jax import jit, random
 from functools import partial
 import jax
-import nux.util as util
+from ...nux import util as util
 from typing import Optional, Mapping, Callable, Sequence, Any, Union, Tuple
 import haiku as hk
 

@@ -3,10 +3,10 @@ import jax.numpy as jnp
 from jax import random, vmap, jit
 from functools import partial
 from typing import Optional, Mapping, Callable, Sequence
-from nux.internal.base import CustomFrame
+from .....nux.internal.base import CustomFrame
 from haiku._src.typing import PRNGKey
 import haiku._src.base as hk_base
-from nux.flows.bijective.residual_flows.power_series import unbiased_neumann_vjp_terms
+from .....nux.flows.bijective.residual_flows.power_series import unbiased_neumann_vjp_terms
 
 def _fixed_point(f, x_init, max_iters, atol):
   # http://www.autodiff.org/Docs/euroad/Second%20EuroAd%20Workshop%20-%20Sebastian%20Schlenkrich%20-%20Differentianting%20Fixed%20Point%20Iterations%20with%20ADOL-C.pdf

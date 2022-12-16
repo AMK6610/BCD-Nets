@@ -1,15 +1,14 @@
 import jax
 import jax.numpy as jnp
-import nux.util as util
 from jax import random, vmap, jit
 from functools import partial
 import haiku as hk
 from typing import Optional, Mapping, Sequence
-from nux.internal.layer import Layer
-import nux.util as util
+from ...nux.internal.layer import Layer
+from ...nux import util as util
 from jax.scipy.special import logsumexp
-import nux.util.weight_initializers as init
-import nux.networks as net
+from ...nux.util import weight_initializers as init
+from ...nux import networks as net
 
 __all__ = ["MADE"]
 

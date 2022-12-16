@@ -2,14 +2,14 @@ import jax
 from jax import random, jit, vmap
 import jax.numpy as jnp
 from functools import partial
-import nux.util as util
+from ...nux import util as util
 from typing import Optional, Mapping, Callable, Sequence
-from nux.internal.layer import Layer, InvertibleLayer
+from ...nux.internal.layer import Layer, InvertibleLayer
 import haiku as hk
 from haiku._src.typing import PRNGKey
 from jax.scipy.special import gammaln, logsumexp
-import nux
-import nux.networks as net
+from ... import nux
+from ...nux import networks as net
 
 __all__ = ["ParametrizedGaussian",
            "GaussianVAE"]
