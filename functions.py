@@ -137,13 +137,13 @@ def get_P_logits(
 
 
 def sample_L(
-    L_params: PParamType, L_state: LStateType, rng_key: PRNGKey,
+    L_params: PParamType, L_state: LStateType, rng_key: PRNGKey, n: int
 ) -> Tuple[jnp.ndarray, jnp.ndarray, LStateType]:
     if pars['use_flow']:
         L_state = cast(hk.State, L_state)
         L_params = cast(hk.State, L_params)
         full_l_batch, full_log_prob_l, out_L_states = sample_flow(
-            L_params, L_state, rng_key, pars['batch_size']
+            L_params, L_state, rng_key, n
         )
         return full_l_batch, full_log_prob_l, out_L_states
     else:
@@ -156,12 +156,12 @@ def sample_L(
         l_distribution = L_dist(loc=means, scale=jnp.exp(log_stds))
         if L_dist is Normal:
             full_l_batch = l_distribution.sample(
-                seed=rng_key, sample_shape=(pars['batch_size'],)
+                seed=rng_key, sample_shape=(n,)
             )
             full_l_batch = cast(jnp.ndarray, full_l_batch)
         else:
             full_l_batch = (
-                rnd.laplace(rng_key, shape=(pars['batch_size'], pars['l_dim'] + pars['noise_dim']))
+                rnd.laplace(rng_key, shape=(n, pars['l_dim'] + pars['noise_dim']))
                 * jnp.exp(log_stds)[None, :]
                 + means[None, :]
             )
@@ -260,7 +260,7 @@ def elbo(
         """Computes a term of the outer expectation, averaging over batch size"""
         rng_key, rng_key_1 = rnd.split(rng_key, 2)
         full_l_batch, full_log_prob_l, out_L_states = sample_L(
-            L_params, L_states, rng_key
+            L_params, L_states, rng_key, pars['batch_size']
         )
         w_noise = full_l_batch[:, -pars['noise_dim']:]
         l_batch = full_l_batch[:, :-pars['noise_dim']]
@@ -319,7 +319,7 @@ def eval_mean(
         eval_W_fn = eval_W_non_ev
     _, dim = Xs.shape
     x_prec = onp.linalg.inv(jnp.cov(Xs.T))
-    full_l_batch, _, _ = sample_L(L_params, L_states, rng_key)
+    full_l_batch, _, _ = sample_L(L_params, L_states, rng_key, pars['n_metric_samples'])
     w_noise = full_l_batch[:, -pars['noise_dim']:]
     l_batch = full_l_batch[:, :-pars['noise_dim']]
     batched_lower_samples = jit(vmap(lower, in_axes=(0, None)), static_argnums=(1,))(
@@ -370,7 +370,7 @@ def get_num_sinkhorn_steps(P_params, L_params, L_states, rng_key):
         un_pmap(rng_key),
     )
 
-    full_l_batch, _, _ = jit(sample_L)(L_params, L_states, rng_key)
+    full_l_batch, _, _ = jit(sample_L, static_argnums=(3,))(L_params, L_states, rng_key, pars['batch_size'])
     batched_P_logits = jit(get_P_logits)(P_params, full_l_batch, rng_key)
     _, errors = jit(pars['ds'].sample_hard_batched_logits_debug)(
         batched_P_logits, tau, rng_key,
@@ -392,7 +392,7 @@ def eval_ID(P_params, L_params, L_states, Xs, rng_key, tau):
     )
 
     _, dim = Xs.shape
-    full_l_batch, _, _ = jit(sample_L, static_argnums=3)(L_params, L_states, rng_key)
+    full_l_batch, _, _ = jit(sample_L, static_argnums=3)(L_params, L_states, rng_key, pars['batch_size'])
     w_noise = full_l_batch[:, -pars['noise_dim']:]
     l_batch = full_l_batch[:, :-pars['noise_dim']]
     batched_lower_samples = jit(vmap(lower, in_axes=(0, None)), static_argnums=(1,))(
