@@ -82,7 +82,7 @@ def init_parallel_params(rng_key: PRNGKey):
     @pmap
     def init_params(rng_key: PRNGKey):
         if pars['use_flow']:
-            L_params, L_states = get_flow_arrays()
+            L_params, L_states = pars['get_flow_arrays']()
         else:
             L_params = jnp.concatenate(
                 (
@@ -142,7 +142,7 @@ def sample_L(
     if pars['use_flow']:
         L_state = cast(hk.State, L_state)
         L_params = cast(hk.State, L_params)
-        full_l_batch, full_log_prob_l, out_L_states = sample_flow(
+        full_l_batch, full_log_prob_l, out_L_states = pars['sample_flow'](
             L_params, L_state, rng_key, n
         )
         return full_l_batch, full_log_prob_l, out_L_states

@@ -6,7 +6,7 @@ import haiku as hk
 from typing import Optional, Mapping, Callable, Sequence, Any
 
 def get_default_network(out_shape, network_kwargs=None, resnet=True, lipschitz=False):
-  import nux.networks as net
+  from ...nux import networks as net
 
   out_dim = out_shape[-1]
 
