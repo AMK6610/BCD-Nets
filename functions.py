@@ -1,27 +1,19 @@
-import numpy as onp
-import jax.numpy as jnp
-from typing import Tuple, Optional, cast
+import itertools
 import itertools
 import warnings
-import sys
-import pickle as pkl
+from typing import Tuple, cast
 
+import jax.numpy as jnp
+import numpy as onp
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
-from .doubly_stochastic import GumbelSinkhorn
 import jax.random as rnd
 from jax import vmap, grad, jit, lax, pmap, partial, value_and_grad
 from .utils import (
     lower,
     eval_W_non_ev,
     eval_W_ev,
-    ff2,
-    num_params,
-    save_params,
-    get_variance,
-    get_variances,
-    from_W,
     rk,
     get_double_tree_variance,
     un_pmap,
@@ -29,30 +21,20 @@ from .utils import (
 )
 from jax.tree_util import tree_map, tree_multimap
 
-import jax
 from tensorflow_probability.substrates.jax.distributions import (
     Normal,
     Horseshoe,
 )
 
-import matplotlib.pyplot as plt
 import matplotlib as mpl
 from jax import config
 import haiku as hk
 from .models import (
-    get_model,
     get_model_arrays,
 )
-import time
-from jax.flatten_util import ravel_pytree
 import optax
-from PIL import Image
-from .flows import get_flow_CIF
 
-from .golem_utils import solve_golem_cv, bootstrapped_golem_cv
-from argparse import ArgumentParser
-from .baselines import run_all_baselines, eval_W_samples
-from .metrics import intervention_distance, ensemble_intervention_distance
+from .metrics import ensemble_intervention_distance
 from ._types import PParamType, LStateType
 
 print("finished imports")
